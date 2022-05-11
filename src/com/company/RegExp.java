@@ -1,7 +1,6 @@
 package com.company;
 
-import java.util.Scanner;
-import java.util.regex.Matcher;
+import java.io.*;
 import java.util.regex.Pattern;
 
 /**
@@ -11,37 +10,31 @@ import java.util.regex.Pattern;
  * @author Анастасия Штайнмец, группа 21ит35
  */
 public class RegExp {
-    public static void main(String[] args) {
-        String inputString;
-        Pattern p = Pattern.compile("\\d+\\s[+,\\-, *, %, /, ^]\\s\\d+"); //класс для чтения регулярного выражения
-        Matcher m; //перебирает последовательно символы, пока не встретит совпадение с шаблоном
+    public static void main(String[] args) throws Exception {
+        String regExp = "\\d+\\s[+,\\-, *, %, /, ^]\\s\\d+"; //класс для чтения регулярного выражения
         double result = 0;
-        System.out.println("Введите пример: ");
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                if (scanner.hasNextLine()) {
-                    inputString = scanner.nextLine();
-                    m = p.matcher(inputString);
-                    if (m.find()) {
-                        result = split(inputString.split(" "), result);
-                        System.out.println(result);
-                        return;
-                    } else {
-                        System.out.println("Ввод не корректен!");
-                        return;
-                    }
+        String inputString;
+        try (BufferedReader fr = new BufferedReader(new FileReader("D://input.txt"));
+             BufferedWriter ad = new BufferedWriter(new FileWriter("D://output.txt"))) {
 
+            while ((inputString = fr.readLine()) != null) {
+                //System.out.println(inputString);
+                if ((inputString.trim().matches(regExp))) {
+                    result = split(inputString.split(" "), result);
+                    ad.write(result + "\n");
+                    System.out.println(result);
+                } else {
+                    ad.write("Введены некорректные данные" + "\n");
+                    System.out.println("Ввод не корректен!");
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     /**
      * метод для работы с введенно пользователем строкой и поиска в нем нужных значений
      *
-     * @param array массив для разрыва строки на значения, необходимый для длальнейшей работы с ними
+     * @param array          массив для разрыва строки на значения, необходимый для длальнейшей работы с ними
      * @param previousResult переменная проверяющая предыдущий результат
      * @return возвращает значения для возможности их дальнейшего использования методе calculate
      * @throws Exception обрабатывает исключения
@@ -62,6 +55,7 @@ public class RegExp {
 
     /**
      * метод для реализации базовых функций калькулятора
+     *
      * @param number1 значение 1
      * @param number2 значение 2
      * @param operand действие, которое должно быть применено к значению
